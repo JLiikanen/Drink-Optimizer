@@ -1,0 +1,49 @@
+label.css-1omxj2m.effi0qh3 {
+    font-weight:531;
+    letter-spacing: 0.04em;
+}
+label.css-d6sw74.e16fv1kl2{
+    font-family: Verdana;
+    font-weight:531;
+    letter-spacing: 0.04em;
+}
+
+.css-r70xgv:hover{
+    box-shadow:0px 5px 15px  5px rgba(0, 0, 0, 0.2);
+}
+
+
+.css-r70xgv.edgvbvh10{
+  background-color: #BF55EC;
+  border: none;
+  color: #26282C;
+  padding: 4px 37px 4px 37px;
+  text-align: center;
+  text-decoration: none;
+  margin-right:60px;
+  font-size: 16px;
+  font-weight:100 !important;
+
+}
+
+.css-r70xgv.edgvbvh5{
+  background-color: #BF55EC;
+  border: none;
+  color: #26282C;
+  padding: 3px 61px 3px 61px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight:600;
+  cursor: pointer;
+}
+
+
+
+
+
+hr{
+    margin-top: 0;
+    margin-bottom:20px;
+    padding-left: 10px;
+}
