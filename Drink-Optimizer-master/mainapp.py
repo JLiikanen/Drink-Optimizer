@@ -14,6 +14,8 @@ drinkPrice = 0
 
 if 'calculatedCost' not in st.session_state:
     st.session_state['calculatedCost'] = False
+if 'calculatedCostCorrectly' not in st.session_state:
+    st.session_state['calculatedCostCorrectly'] = False
 
 st.set_page_config(
     page_title="Scientific Drinking",
@@ -149,10 +151,11 @@ with drinktab:
         nonAlcoholAmount = st.number_input("Non-Alcoholic mixer amount in liters", min_value=0.0, step=0.5,
                                            format="%.2f")
     with col2:
-        alcoholAmount = st.number_input("Alcoholic drink amount in liters", min_value=0.0, step=0.5, format="%.2f")
+        alcoholAmount = st.number_input("Alcoholic drink amount in liters", min_value=0.0, step=0.5, format="%.2f",
+                                        value=0.33)
     with col3:
         alcoholPercentage = st.number_input("Alcohol percentage %", min_value=0.0, step=5.0, format="%.2f",
-                                            help="An input of 26,7 indicates 26.7%. Not 0.267 != 26.7%")
+                                            help="An input of 26,7 indicates 26.7%. Not 0.267 != 26.7%", value=4.7)
 
     # GLOBAL VARIABLES TO HELP WITH THE COLUMNS BELOW
     volume, level, emptySpace = st.columns([1, 1, 5], gap="small")
@@ -231,7 +234,7 @@ with drinktab:
                                       ticksuffix="  ", mirror=True,
                                       title=dict(font=dict(size=17),
                                                  text="Alcohol % level", standoff=15), showspikes=True,
-                                      spikethickness=2, spikecolor="#2D2833",
+                                      spikethickness=2, spikecolor="#6F637E",
                                       tickfont=dict(size=15), ticklabeloverflow='hide past div'
                                       ),
                 xaxis=go.layout.XAxis(tickformat=".2",
@@ -240,7 +243,7 @@ with drinktab:
                                       title=dict(font=dict(size=17),
                                                  text="Alcoholic Drink Amount (Liters)",
                                                  standoff=15), showspikes=True, spikethickness=2,
-                                      spikecolor="#2D2833", tickfont=dict(size=15),  #
+                                      spikecolor="#6F637E", tickfont=dict(size=15),  #
                                       rangeslider=dict(visible=True, bordercolor="#6D6969", borderwidth=1)),
                 plot_bgcolor="#202225",
                 hoverlabel=dict(bgcolor="#202225", font=dict(color="#E3E2E2"), bordercolor="#4F4A55"),
@@ -275,6 +278,7 @@ with drinktab:
         if "drinkTable" not in st.session_state:
             st.session_state["drinkTable"] = pd.DataFrame(columns=tableCols)
 
+
         with drinkprice:
             st.write(
                 "#### Your Drink's Price")  # equals to x amount of olut beer, so theres the perspecitve! liköörpullo vastaa noin viittä lidl olutta vain"
@@ -285,9 +289,9 @@ with drinktab:
                 pricePerAmount = st.number_input("Price €: ", min_value=0.0, step=0.5, format="%.2f",
                                                  key="nonalcoholprice")
                 alcoholAmountBought = st.number_input("Alcohol amount bought: (Liters)", min_value=0.0, step=0.5,
-                                                      format="%.2f")
+                                                      format="%.2f", value=0.33)
                 pricePerAlcoholAmount = st.number_input("Price €: ", min_value=0.0, step=0.5, format="%.2f",
-                                                        key="alcoholprice")
+                                                        key="alcoholprice", value=0.99)
 
                 response = st.form_submit_button('Calculate')  # aina kun painaa niin muuttu falseksi.
                 if response:
@@ -304,6 +308,7 @@ with drinktab:
                                                                    pricePerAlcoholAmount,
                                                                    alcoholAmount, nonAlcoholAmount,
                                                                    calculatingPercentage)
+                st.session_state['calculatedCostCorrectly'] = True
                 st.write(print)
         elif alcoholAmount > 0 and alcoholAmountBought > 0 and nonAlcoholAmount == 0:
             with costAnalysis:
@@ -312,27 +317,32 @@ with drinktab:
                 drinkPrice, print = drinkcalculations.onlyAlcohol(alcoholAmount, pricePerAlcoholAmount,
                                                                   calculatingPercentage,
                                                                   alcoholAmountBought)
+                st.session_state['calculatedCostCorrectly'] = True
                 st.write(print)
         elif alcoholAmount <= 0:
             with costAnalysis:
                 st.write("### Calculated Cost Analysis :bar_chart:")
                 st.write("---")
                 st.write("I agree, Alcohol is bad for you. Better stay away from it.")
+                st.session_state['calculatedCostCorrectly'] = False  # makes it so you cant drink non-alcoholic drinks
         elif alcoholAmount > 0 and alcoholAmountBought == 0:
             with costAnalysis:
                 st.write("### Calculated Cost Analysis :bar_chart:")
                 st.write("---")
                 st.write("Enter the stats of the alcohol constituent.")
+                st.session_state['calculatedCostCorrectly'] = False
         elif nonAlcoholAmount > 0 and amountBought == 0:
             with costAnalysis:
                 st.write("### Calculated Cost Analysis :bar_chart:")
                 st.write("---")
                 st.write("Enter the stats of the non-alcohol constituent.")
+                st.session_state['calculatedCostCorrectly'] = False
         elif alcoholAmountBought <= 0 and amountBought <= 0:
             with costAnalysis:
                 st.write("### Calculated Cost Analysis :bar_chart:")
                 st.write("---")
                 st.write("O-oops! You forgot to enter your ingredient stats!")
+                st.session_state['calculatedCostCorrectly'] = False
     else:
         with costAnalysis:
             st.write("### Calculated Cost Analysis :bar_chart:")
@@ -372,11 +382,13 @@ with drinktab:
 
             def errorMsgForAddToTable():
                 st.write(
-                    "Oh OH! You need to insert the drink time and calculate the drink's price before pressing me!")
+                    "Oh OH! You need to insert the drinking time and calculate the drink's price on the (Make your "
+                    "drink - tab) before pressing me!")
+
+                # BEFORE PRESSING; TIME AND PRICE NEED TO BE SET
 
 
-            # BEFORE PRESSING; TIME AND PRICE NEED TO BE SET
-            if drinkTime > 0 and st.session_state["calculatedCost"]:
+            if drinkTime > 0 and st.session_state['calculatedCostCorrectly']:
                 if st.button("Drink Your artwork"):
                     addToTable(nonAlcoholAmount, alcoholAmount, alcoholLevel, drinkTime, drinkPrice)
             else:
@@ -414,13 +426,18 @@ with drinktab:
                         st.session_state['drinkTable'][st.session_state['drinkTable']["Name"] == itemToDelete].index)[0]
 
                     st.session_state['drinkTable'].drop(rowToDelete, inplace=True)
+                    st.session_state['drinkTable'].reset_index(inplace=True, drop=True)
 
-        st.dataframe(st.session_state["drinkTable"].style.format({"Alcohol level": "{:.2f}%", "Volume": "{:.2f}L",
-                                                                  "Time": "{:.0f} Minutes", "Price": "{:.2f}€"}),
-                     use_container_width=True)
+        st.table(st.session_state["drinkTable"].style.format(
+            {"Alcohol level": "{:.2f}%", "Volume": "{:.2f}L",
+             "Time": "{:.0f} Minutes", "Price": "{:.2f}€"}),)
+                     #use_container_width=True)
 
+
+        # index=pd.RangeIndex(start=1) & .loc[1:len(st.session_state["drinkTable"]),]
         st.write("---")
         left, price, bac, time, volume, right = st.columns([0.5, 1, 1, 2, 1, 0.5])
+        bacLevel = 0
         with price:
             st.metric("Price:", value=f"{round(st.session_state['drinkTable']['Price'].sum(), 2)}€")
         with bac:
@@ -429,10 +446,10 @@ with drinktab:
                     'Alcohol level']) / 100).sum()
 
                 alcholInGrams = pureAlchol * 1000 * 0.7894
-                bac = round((alcholInGrams / (weightParam * r)) * 1000 - (drinkingTime * 0.15),
-                            2)  # Huomaa että palamisnopeus ei ollut promilleina!!!
+                bacLevel = round((alcholInGrams / (weightParam * r)) * 1000 - (drinkingTime * 0.15),
+                                 2)  # Huomaa että palamisnopeus ei ollut promilleina!!!
 
-                st.metric("Body Alcohol Level:", f"{bac} \u2030")
+                st.metric("Body Alcohol Level:", f"{bacLevel} \u2030")
         with time:
             minutes = st.session_state['drinkTable']['Time'].sum()
             if minutes >= 100:
@@ -444,4 +461,30 @@ with drinktab:
         with volume:
             st.metric("Liquid drank:", f"{round(st.session_state['drinkTable']['Volume'].sum(), 2)} Liters")
 
-        # Verbal analysis of alcohol level
+        st.write("#### State analysis: ")
+        st.write("---")
+        if 0 < bacLevel <= 0.29:
+            st.write("Average individual appears normal. Maybe a little more excited than usual.")
+        elif 0.3 <= bacLevel < 0.59:
+            st.write(
+                "Mild euphoria kicks in. You feel relaxed... Yet Joyous.  \nYou talk to strangers like you have known "
+                "them for years.  \nYou feel like this in going to be a good night.")
+
+        elif 0.6 <= bacLevel <= 0.99:
+            st.write("High levels of euphoria. You occasionally lose your balance and you struggle to keep "
+                     "yourself up."
+                     "... Which causes funny moments.  \n"
+                     "Alcohol clouds your judgement and perceived risks decrease.  \n"
+                     "You seek contact with other humans through cuddling, dancing or fighting.  \n"
+                     "You shouldn't drink any more though.")
+        elif 1.0 <= bacLevel <= 2.0:
+            st.write("Now walking and physical tasks get harder.. Big time.  \nThe state of euphoria is replaced by "
+                     "the "
+                     "feeling of nausea. You start vomiting.  \nYour mouth says whatever it wants.  \n"
+                     "You've crossed the line. "
+                     "Better get some rest and drink water.")
+        elif bacLevel > 2.00:
+            st.write("Nausea, vomiting... Total mental confusion. Memory Blackout. Seek help, "
+                     "or you better start looking for a tombstone.")
+        else:
+            st.write("You are sober :) ")

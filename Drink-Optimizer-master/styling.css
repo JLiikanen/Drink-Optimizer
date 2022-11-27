@@ -38,12 +38,12 @@ label.css-d6sw74.e16fv1kl2{
   cursor: pointer;
 }
 
-
-
-
-
 hr{
     margin-top: 0;
     margin-bottom:20px;
     padding-left: 10px;
 }
+
+
+thead tr th:first-child {display:none}
+tbody th {display:none}
