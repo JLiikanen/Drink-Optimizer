@@ -44,6 +44,21 @@ hr{
     padding-left: 10px;
 }
 
+/* Hides table index */
 
 thead tr th:first-child {display:none}
 tbody th {display:none}
+
+.css-1l269bu.e1tzin5v2{
+       border:1px solid grey;
+       border-radius:5px;
+       padding:7px 7px 5px 7px;
+
+}
+/*
+.css-1r6slb0.e1tzin5v2{
+    border:1px solid grey;
+    border-radius:5px;
+    padding:7px 7px 3px 7px;
+}
+*/

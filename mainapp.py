@@ -149,13 +149,13 @@ with drinktab:
     col1, col2, col3 = st.columns([1, 1, 1], gap="small")
     with col1:
         nonAlcoholAmount = st.number_input("Non-Alcoholic mixer amount in liters", min_value=0.0, step=0.5,
-                                           format="%.2f")
+                                           format="%.2f", value=0.5)
     with col2:
         alcoholAmount = st.number_input("Alcoholic drink amount in liters", min_value=0.0, step=0.5, format="%.2f",
                                         value=0.33)
     with col3:
         alcoholPercentage = st.number_input("Alcohol percentage %", min_value=0.0, step=5.0, format="%.2f",
-                                            help="An input of 26,7 indicates 26.7%. Not 0.267 != 26.7%", value=4.7)
+                                            help="An input of 26,7 indicates 26.7%. Not 0.267 != 26.7%", value=20.0)
 
     # GLOBAL VARIABLES TO HELP WITH THE COLUMNS BELOW
     volume, level, emptySpace = st.columns([1, 1, 5], gap="small")
@@ -277,7 +277,6 @@ with drinktab:
         tableCols = ["Name", "Volume", "Alcohol level", "Time", "Price"]
         if "drinkTable" not in st.session_state:
             st.session_state["drinkTable"] = pd.DataFrame(columns=tableCols)
-
 
         with drinkprice:
             st.write(
@@ -430,13 +429,12 @@ with drinktab:
 
         st.table(st.session_state["drinkTable"].style.format(
             {"Alcohol level": "{:.2f}%", "Volume": "{:.2f}L",
-             "Time": "{:.0f} Minutes", "Price": "{:.2f}€"}),)
-                     #use_container_width=True)
-
+             "Time": "{:.0f} Minutes", "Price": "{:.2f}€"}), )
+        # use_container_width=True)
 
         # index=pd.RangeIndex(start=1) & .loc[1:len(st.session_state["drinkTable"]),]
         st.write("---")
-        left, price, bac, time, volume, right = st.columns([0.5, 1, 1, 2, 1, 0.5])
+        left, price, bac, time, volume, right = st.columns([0.5, 1, 1, 1.9, 1, 0.5])
         bacLevel = 0
         with price:
             st.metric("Price:", value=f"{round(st.session_state['drinkTable']['Price'].sum(), 2)}€")
@@ -461,30 +459,35 @@ with drinktab:
         with volume:
             st.metric("Liquid drank:", f"{round(st.session_state['drinkTable']['Volume'].sum(), 2)} Liters")
 
-        st.write("#### State analysis: ")
         st.write("---")
+        st.write("#### State analysis: ")
+
         if 0 < bacLevel <= 0.29:
-            st.write("Average individual appears normal. Maybe a little more excited than usual.")
+            st.write(":point_right: Average individual appears normal. Maybe a little more excited than usual.")
         elif 0.3 <= bacLevel < 0.59:
             st.write(
-                "Mild euphoria kicks in. You feel relaxed... Yet Joyous.  \nYou talk to strangers like you have known "
-                "them for years.  \nYou feel like this in going to be a good night.")
+                ":heavy_check_mark: Mild euphoria kicks in. You feel relaxed... Yet Joyous.  \n:speech_balloon: You talk to strangers like you have known "
+                "them for years.  \n:clinking_glasses: You feel like this in going to be a good night.")
 
         elif 0.6 <= bacLevel <= 0.99:
-            st.write("High levels of euphoria. You occasionally lose your balance and you struggle to keep "
+            st.markdown(":heavy_check_mark: High levels of euphoria.  \n"
+                        ":man-cartwheeling: You occasionally lose your balance and you "
+                        "struggle to keep "
                      "yourself up."
                      "... Which causes funny moments.  \n"
-                     "Alcohol clouds your judgement and perceived risks decrease.  \n"
-                     "You seek contact with other humans through cuddling, dancing or fighting.  \n"
-                     "You shouldn't drink any more though.")
+                     ":scales: Alcohol clouds your judgement and perceived risks decrease.  \n"
+                     ":family: You seek contact with other humans through cuddling, dancing or fighting.  \n"
+                     ":point_right: You shouldn't drink any more though.")
         elif 1.0 <= bacLevel <= 2.0:
-            st.write("Now walking and physical tasks get harder.. Big time.  \nThe state of euphoria is replaced by "
+            st.write(":dizzy: Now walking and physical tasks get harder.. Big time.  \n:face_vomiting: The state of "
+                     "euphoria is replaced by "
                      "the "
-                     "feeling of nausea. You start vomiting.  \nYour mouth says whatever it wants.  \n"
-                     "You've crossed the line. "
-                     "Better get some rest and drink water.")
+                     "feeling of nausea. You start vomiting.  \n:speech_balloon: Your mouth says whatever it wants.  \n"
+                     ":x: You've crossed the line.  \n"
+                     ":point_right: Better get some rest and drink water.")
         elif bacLevel > 2.00:
-            st.write("Nausea, vomiting... Total mental confusion. Memory Blackout. Seek help, "
-                     "or you better start looking for a tombstone.")
+            st.write(":face_vomiting: Nausea and vomiting continues...  \n"
+                     ":x: Total mental confusion and memory blackout.  \n"
+                     ":point_right: Seek help, or you better start looking for a tombstone.")
         else:
-            st.write("You are sober :) ")
+            st.write(":heavy_check_mark: You are sober. ")
