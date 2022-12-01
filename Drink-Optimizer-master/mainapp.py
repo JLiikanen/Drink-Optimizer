@@ -136,7 +136,7 @@ def randomGen(lst):
 # st.write("# Scientific Drinking - Know What You Drink")
 st.image(Image.open("Drink-Optimizer-master/Drink Optimzer.png"))
 
-with open("styling.css") as style:
+with open("Drink-Optimizer-master/styling.css") as style:
     st.markdown(f"<style> {style.read()} </style>", unsafe_allow_html=True)
 
 drinktab, yourlevel = st.tabs(["Make Your Drink", "Enjoy your drinks"])
