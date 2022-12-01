@@ -134,7 +134,7 @@ def randomGen(lst):
 # -----------------------------------------------
 # THE WEBISTE
 # st.write("# Scientific Drinking - Know What You Drink")
-st.image(Image.open("Drink Optimzer.png"))
+st.image(Image.open("Drink-Optimizer-master/Drink Optimzer.png"))
 
 with open("styling.css") as style:
     st.markdown(f"<style> {style.read()} </style>", unsafe_allow_html=True)
