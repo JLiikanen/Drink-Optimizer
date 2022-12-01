@@ -114,7 +114,7 @@ def randomGen(lst):
                     triedWords[name] = 1
                     i += 1
             if i == iLimit:
-                return "", False  # didnt find a new combination
+                return "", False  # didn't find a new combination
             else:
                 return name, True
 
@@ -134,9 +134,9 @@ def randomGen(lst):
 # -----------------------------------------------
 # THE WEBISTE
 # st.write("# Scientific Drinking - Know What You Drink")
-st.image(Image.open("Drink-Optimizer-master/Drink Optimzer.png"))
+st.image(Image.open("Drink Optimzer.png"))
 
-with open("Drink-Optimizer-master/styling.css") as style:
+with open("styling.css") as style:
     st.markdown(f"<style> {style.read()} </style>", unsafe_allow_html=True)
 
 drinktab, yourlevel = st.tabs(["Make Your Drink", "Enjoy your drinks"])
