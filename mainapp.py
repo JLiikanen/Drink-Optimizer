@@ -204,6 +204,8 @@ with drinktab:
     # DRINK THIS DRINK
 
     with chart:
+        def unableClick():
+            pass
         if alcoholAmount > 0 and alcoholPercentage > 0:  # SHOW THE CHART ONLY WHEN THESE INPUTS ARE GIVEN
 
             # PREPARING THE DATA FOR THE CHART
@@ -235,7 +237,7 @@ with drinktab:
                                       title=dict(font=dict(size=17),
                                                  text="Alcohol % level", standoff=15), showspikes=True,
                                       spikethickness=2, spikecolor="#6F637E",
-                                      tickfont=dict(size=15), ticklabeloverflow='hide past div'
+                                      tickfont=dict(size=15), ticklabeloverflow='hide past div', fixedrange=True
                                       ),
                 xaxis=go.layout.XAxis(tickformat=".2",
                                       tickmode="array", ticklabelposition="outside",
@@ -244,10 +246,14 @@ with drinktab:
                                                  text="Alcoholic Drink Amount (Liters)",
                                                  standoff=15), showspikes=True, spikethickness=2,
                                       spikecolor="#6F637E", tickfont=dict(size=15),  #
-                                      rangeslider=dict(visible=True, bordercolor="#6D6969", borderwidth=1)),
+                                      rangeslider=dict(visible=True, bordercolor="#6D6969", borderwidth=1, range=[0, 0.6]), fixedrange=True),
                 plot_bgcolor="#202225",
                 hoverlabel=dict(bgcolor="#202225", font=dict(color="#E3E2E2"), bordercolor="#4F4A55"),
-                margin=dict(t=53), modebar=dict(remove=["zoom", "resetscale", "pan", "zoomin", "zoomout", ], ))
+                margin=dict(t=53),
+
+
+            )
+
 
             # chart must be alingnd properly
             # chart positioning
@@ -259,10 +265,9 @@ with drinktab:
             defaultFig.update_layout(
                 title={'text': "Alcohol Combinations", 'y': 0.964, 'yanchor': 'top', 'font': dict(size=20)},
                 xaxis=dict(showgrid=False, rangemode="tozero",
-                           title=dict(font=dict(size=17), text="Alcoholic Drink Amount (Liters)")),
+                           title=dict(font=dict(size=17), text="Alcoholic Drink Amount (Liters)"), fixedrange=True),
                 yaxis=dict(rangemode="tozero", title=dict(font=dict(size=17), text="Alcohol % level", standoff=15),
-                           showgrid=False),
-                modebar=dict(remove=["zoom", "resetscale", "pan", "zoomin", "zoomout"]),
+                           showgrid=False, fixedrange=True),
                 annotations=[
                     go.layout.Annotation(text="No Data", xref="paper", yref="paper", y=0.5, x=0.5, showarrow=False,
                                          opacity=0.6,
@@ -270,7 +275,7 @@ with drinktab:
 
             )
 
-            st.plotly_chart(defaultFig, use_container_width=True)
+            st.plotly_chart(defaultFig, use_container_width=True, config={"displaylogo": False})
 
         # INITIALIZING THE TABLE AND SAVING IT TO STATE
 
@@ -445,7 +450,7 @@ with drinktab:
 
                 alcholInGrams = pureAlchol * 1000 * 0.7894
                 bacLevel = round((alcholInGrams / (weightParam * r)) * 1000 - (drinkingTime * 0.15),
-                                 2)  # Huomaa että palamisnopeus ei ollut promilleina!!!
+                                 2)
 
                 st.metric("Body Alcohol Level:", f"{bacLevel} \u2030")
         with time:
@@ -460,24 +465,25 @@ with drinktab:
             st.metric("Liquid drank:", f"{round(st.session_state['drinkTable']['Volume'].sum(), 2)} Liters")
 
         st.write("---")
-        st.write("#### State analysis: ")
+        st.write("#### The effects of alcohol on you currently:")
 
         if 0 < bacLevel <= 0.29:
             st.write(":point_right: Average individual appears normal. Maybe a little more excited than usual.")
         elif 0.3 <= bacLevel < 0.59:
             st.write(
-                ":heavy_check_mark: Mild euphoria kicks in. You feel relaxed... Yet Joyous.  \n:speech_balloon: You talk to strangers like you have known "
+                ":heavy_check_mark: Mild euphoria kicks in. You feel relaxed... Yet Joyous.  \n:speech_balloon: You "
+                "talk to strangers like you have known "
                 "them for years.  \n:clinking_glasses: You feel like this in going to be a good night.")
 
         elif 0.6 <= bacLevel <= 0.99:
             st.markdown(":heavy_check_mark: High levels of euphoria.  \n"
                         ":man-cartwheeling: You occasionally lose your balance and you "
                         "struggle to keep "
-                     "yourself up."
-                     "... Which causes funny moments.  \n"
-                     ":scales: Alcohol clouds your judgement and perceived risks decrease.  \n"
-                     ":family: You seek contact with other humans through cuddling, dancing or fighting.  \n"
-                     ":point_right: You shouldn't drink any more though.")
+                        "yourself up."
+                        "... Which causes funny moments.  \n"
+                        ":scales: Alcohol clouds your judgement and perceived risks decrease.  \n"
+                        ":family: You seek contact with other humans through cuddling, dancing or fighting.  \n"
+                        ":point_right: You shouldn't drink any more though.")
         elif 1.0 <= bacLevel <= 2.0:
             st.write(":dizzy: Now walking and physical tasks get harder.. Big time.  \n:face_vomiting: The state of "
                      "euphoria is replaced by "
