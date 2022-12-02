@@ -13,10 +13,10 @@ Frontend:
 Streamlit 1.15.0
 
 Backend technologies:
-Pandas
-PIL
-Python random library - 
-Python PIL library for displaying photos 
+Pandas,
+Python random library,
+Python PIL library for displaying photos,
+Numpy
 
 Chart backend:
 Plotly
