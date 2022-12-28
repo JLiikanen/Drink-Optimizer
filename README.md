@@ -18,7 +18,7 @@ Backend technologies:
 Pandas,
 Python Random library,
 Python PIL library for displaying photos,
-Numpy
+Numpy.
 
 Chart backend:
 Plotly
