@@ -206,6 +206,8 @@ with drinktab:
     with chart:
         def unableClick():
             pass
+
+
         if alcoholAmount > 0 and alcoholPercentage > 0:  # SHOW THE CHART ONLY WHEN THESE INPUTS ARE GIVEN
 
             # PREPARING THE DATA FOR THE CHART
@@ -246,14 +248,13 @@ with drinktab:
                                                  text="Alcoholic Drink Amount (Liters)",
                                                  standoff=15), showspikes=True, spikethickness=2,
                                       spikecolor="#6F637E", tickfont=dict(size=15),  #
-                                      rangeslider=dict(visible=True, bordercolor="#6D6969", borderwidth=1, range=[0, 0.6]), fixedrange=True),
+                                      rangeslider=dict(visible=True, bordercolor="#6D6969", borderwidth=1,
+                                                       range=[0, 0.6]), fixedrange=True),
                 plot_bgcolor="#202225",
                 hoverlabel=dict(bgcolor="#202225", font=dict(color="#E3E2E2"), bordercolor="#4F4A55"),
                 margin=dict(t=53),
 
-
             )
-
 
             # chart must be alingnd properly
             # chart positioning
@@ -279,7 +280,7 @@ with drinktab:
 
         # INITIALIZING THE TABLE AND SAVING IT TO STATE
 
-        tableCols = ["Name", "Volume", "Alcohol level", "Time", "Price"]
+        tableCols = ["Drink Name", "Volume", "Alcohol level", "Time", "Price"]
         if "drinkTable" not in st.session_state:
             st.session_state["drinkTable"] = pd.DataFrame(columns=tableCols)
 
@@ -372,14 +373,14 @@ with drinktab:
                 if len(indexOfSameDrink) > 0:
                     drinkName = st.session_state["drinkTable"].iloc[indexOfSameDrink[0], 0]
                 else:
-                    lstForGenerator = list(st.session_state["drinkTable"]["Name"].append(pd.Series([""]),
+                    lstForGenerator = list(st.session_state["drinkTable"]["Drink Name"].append(pd.Series([""]),
                                                                                          ignore_index=True))
                     drinkName = randomGen(lstForGenerator)
 
                 st.session_state["drinkTable"] = pd.concat(
                     [st.session_state["drinkTable"],
                      pd.Series(
-                         {"Name": drinkName, "Volume": sumVolume, "Alcohol level": alcoholLevel,
+                         {"Drink Name": drinkName, "Volume": sumVolume, "Alcohol level": alcoholLevel,
                           "Time": drinkTime, "Price": drinkPrice}).to_frame().T]
                     , ignore_index=True)
 
@@ -423,11 +424,11 @@ with drinktab:
         with tableInterface:
             if len(st.session_state['drinkTable']) >= 1:
                 itemToDelete = st.selectbox(label="not needed",
-                                            options=st.session_state["drinkTable"]["Name"].drop_duplicates(),
+                                            options=st.session_state["drinkTable"]["Drink Name"].drop_duplicates(),
                                             label_visibility='hidden')
                 if st.button("Delete item"):
                     rowToDelete = list(
-                        st.session_state['drinkTable'][st.session_state['drinkTable']["Name"] == itemToDelete].index)[0]
+                        st.session_state['drinkTable'][st.session_state['drinkTable']["Drink Name"] == itemToDelete].index)[0]
 
                     st.session_state['drinkTable'].drop(rowToDelete, inplace=True)
                     st.session_state['drinkTable'].reset_index(inplace=True, drop=True)
